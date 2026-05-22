@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giám sát Năng lượng Mặt trời Thông minh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=2">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">☀</div>
+        <div>
+          <h1>Năng lượng Mặt trời Thông minh</h1>
+          <p class="subtitle">Theo dõi 4 hướng · 2 trục servo · MQTT real-time</p>
+        </div>
+      </div>
+      <div id="alertBanner" class="alert-banner hidden"></div>
+    </header>
+
+    <main class="grid-3">
+      <section class="panel panel-control">
+        <h2>Điều khiển</h2>
+
+        <div class="connection-card">
+          <div id="statusDot" class="status-dot offline"></div>
+          <div>
+            <span id="statusText" class="status-text">Đang kiểm tra...</span>
+            <span id="lastSeen" class="last-seen"></span>
+          </div>
+        </div>
+
+        <!-- rain UI removed -->
+
+        <div class="mode-switch">
+          <button type="button" id="btnAuto" class="mode-btn active">Tự động</button>
+          <button type="button" id="btnManual" class="mode-btn">Thủ công</button>
+        </div>
+
+        <div id="manualControls" class="manual-controls hidden">
+          <div class="slider-group">
+            <label>Servo ngang <span id="azVal">90</span>°</label>
+            <input type="range" id="sliderAz" min="0" max="180" value="90">
+          </div>
+          <div class="slider-group">
+            <label>Servo dọc <span id="elVal">90</span>°</label>
+            <input type="range" id="sliderEl" min="0" max="180" value="90">
+          </div>
+          <p class="slider-hint">Kéo thanh = gửi lệnh tự động (~0.15s)</p>
+          <button type="button" id="btnApplyManual" class="btn-primary">Áp dụng góc ngay</button>
+        </div>
+
+        <div class="stats-mini">
+          <div class="stat">
+            <span class="stat-label">Tổng ánh sáng</span>
+            <span id="lightTotal" class="stat-value">—</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Góc ngang / dọc</span>
+            <span id="anglesNow" class="stat-value">— / —</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel panel-log">
+        <h2><span class="panel-heading">Nhật ký dữ liệu</span><span class="badge" id="dataSource">Trực tiếp</span></h2>
+
+        <div class="log-legend">
+          <strong>Chú thích:</strong>
+          <span>Az: Góc servo ngang (0–180°)</span>
+          <span>El: Góc servo dọc (0–180°)</span>
+        </div>
+
+        <div class="log-table-wrap">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Thời gian</th>
+                <th>Đông</th>
+                <th>Tây</th>
+                <th>Bắc</th>
+                <th>Nam</th>
+                <th>Tổng</th>
+                <th>Az</th>
+                <th>El</th>
+                <!-- Mưa column removed -->
+              </tr>
+            </thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+        <div id="alertsList" class="alerts-list"></div>
+      </section>
+
+      <section class="panel panel-charts">
+        <h2>Biểu đồ</h2>
+        <div class="charts-container">
+          <div class="chart-wrap">
+            <div class="chart-scroll">
+              <canvas id="chartLight" width="2200" height="280"></canvas>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-scroll">
+              <canvas id="chartAngles" width="2200" height="280"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="{% static 'js/dashboard.js' %}?v=2"></script>
+</body>
+</html>
